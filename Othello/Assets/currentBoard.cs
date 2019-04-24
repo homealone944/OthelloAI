@@ -5,17 +5,22 @@ using System.Linq;
 
 public class currentBoard : MonoBehaviour
 {
-    public Dictionary<Vector2, Spot> curBoard;
     private uiUpdater uiManager;
+
+    //Game Variables
+    public Dictionary<Vector2, Spot> curBoard;
+    [HideInInspector]
     public int whoseTurn = 1;
 
+    //Helper Variables
     private int cantMoveCount = 0;
-
-    public List<AI> aiList;
-
     bool changed = false;
+    [HideInInspector]
     public bool isPlaying = false;
+    string[] letters = new string[] {"A", "B", "C", "D", "E", "F", "G", "H"};
 
+    //AI Variables
+    public List<AI> aiList;
     bool p1IsAi = false;
     bool p2IsAi = false;
 
@@ -26,6 +31,8 @@ public class currentBoard : MonoBehaviour
 
     public void startGame(bool aiP1, bool aiP2)
     {
+        whoseTurn = 1;
+
         aiList[0].gameObject.SetActive(true);
         aiList[1].gameObject.SetActive(true);
 
@@ -60,11 +67,10 @@ public class currentBoard : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log(whoseTurn + ", NO MORE MOVES");
                     cantMoveCount++;
                     if (cantMoveCount < 2)
                     {
-                        Debug.Log("NO MORE MOVES");
-
                         var player = 2;
                         if (whoseTurn > 0)
                             player = 1;
@@ -99,7 +105,7 @@ public class currentBoard : MonoBehaviour
 
         if (!start)
         {
-            uiManager.addMove(("\tP" + player + ": " + pos));
+            uiManager.addMove("\tP" + player + ": (" + letters[(int)pos.x] + "," + pos.y + ")");
             uiManager.setWhoJustMadeTurn(player);
             //Spot is now marked
             cSpot.updateOwn(whoseTurn);
@@ -129,12 +135,6 @@ public class currentBoard : MonoBehaviour
         //Switch turn
         changed = true;
         whoseTurn *= -1;
-
-        if (whoseTurn == 1 && p1IsAi && !start)
-            SpotClicked(aiList[0].onTurn(curBoard, this, whoseTurn));
-        if (whoseTurn == -1 && p2IsAi && !start)
-            SpotClicked(aiList[1].onTurn(curBoard, this, whoseTurn));
-
     }
 
     //Returns a list of spots that can be placed at
