@@ -193,7 +193,7 @@ public class currentBoard : MonoBehaviour
     //Will iterate in direction
     //Return: true if startLoc is possible spot for currentPlayer to play
     //Input: change in X + change in Y + position to check if possible spot + if spots are to be flipped
-    private bool iterDirection(Dictionary<Vector2, Spot> currentState, int deltaX, int deltaY, Spot startLoc, bool flip = false, bool print = false)
+    public bool iterDirection(Dictionary<Vector2, Spot> currentState, int deltaX, int deltaY, Spot startLoc, bool flip = false, bool print = false)
     {
         List<Spot> toFlip = new List<Spot>();
         int dirPossible = 0;
