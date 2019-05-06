@@ -23,7 +23,6 @@ public class MakeTable : MonoBehaviour
         {
             for (int j = 0; j < size; j++)
             {
-                Debug.Log("creating button");
                 createButton(i, j);
             }
         }

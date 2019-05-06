@@ -23,6 +23,9 @@ public class currentBoard : MonoBehaviour
     public List<AI> aiList;
     bool p1IsAi = false;
     bool p2IsAi = false;
+    bool aiTimeCountDown = false;
+    float aiTimer = 2;
+    public bool aiCanGo = false;
 
     private void Start()
     {
@@ -43,10 +46,26 @@ public class currentBoard : MonoBehaviour
             aiList[0].gameObject.SetActive(false);
         if (!p2IsAi)
             aiList[1].gameObject.SetActive(false);
+
+        aiTimeCountDown = true;
+
     }
 
     void Update()
     {
+        if (aiTimeCountDown)
+        {
+            aiTimer -= Time.deltaTime;
+
+        }
+        if (aiTimer <= 0)
+        {
+            Debug.Log("AI CAN GO");
+            aiTimeCountDown = false;
+            aiTimer = 2;
+            aiCanGo = true;
+        }
+
         if (isPlaying)
         {
             if (changed)
@@ -152,7 +171,7 @@ public class currentBoard : MonoBehaviour
         {
             GameSpot s = currentState[position];
             //not already played on this spot and if is next to opponent's tile
-            if (s.whoOwns == 0 && isNextToOpponent(currentState, s, whoseTurn * -1))
+            if (s.spot.whoOwns == 0 && isNextToOpponent(currentState, s, whoseTurn * -1))
                 possible.Add(position);
         }
 
@@ -161,8 +180,8 @@ public class currentBoard : MonoBehaviour
         foreach (Vector2 pos in possible)
         {
             GameSpot curSpot = currentState[pos];
-            int posX = (int)curSpot.pos.x;
-            int posY = (int)curSpot.pos.y;
+            int posX = (int)curSpot.spot.pos.x;
+            int posY = (int)curSpot.spot.pos.y;
 
             if (iterDirection(currentState, 0, -1,curSpot)) //Down
                 continue;
@@ -250,8 +269,8 @@ public class currentBoard : MonoBehaviour
         List<GameSpot> toFlip = new List<GameSpot>();
         int dirPossible = 0;
         int hitMyOwn = 0;
-        int x = (int)startLoc.pos.x + deltaX;
-        int y = (int)startLoc.pos.y + deltaY;
+        int x = (int)startLoc.spot.pos.x + deltaX;
+        int y = (int)startLoc.spot.pos.y + deltaY;
         //End if get to edge, first spot != opponent, doesnt ever hit own
         while (inBounds(x, y) && dirPossible != -1 && hitMyOwn != 1)
         {
@@ -261,15 +280,15 @@ public class currentBoard : MonoBehaviour
             if (dirPossible == 0)
             {
                 //First spot to the right of initial
-                if(print) Debug.Log("First: " + newSpot.whoOwns);
-                if (newSpot.whoOwns == whoseTurn * -1)
+                if(print) Debug.Log("First: " + newSpot.spot.whoOwns);
+                if (newSpot.spot.whoOwns == whoseTurn * -1)
                 {
                     //Opponent owns it
                     dirPossible = 1;
                     if(print) Debug.Log("Opponent Owns + canFlip");
                     toFlip.Add(newSpot);
                 }
-                else if (newSpot.whoOwns != whoseTurn * -1)
+                else if (newSpot.spot.whoOwns != whoseTurn * -1)
                 {
                     //Oppononent doesnt own it
                     dirPossible = -1;
@@ -278,13 +297,13 @@ public class currentBoard : MonoBehaviour
             }
             else
             {
-                if (newSpot.whoOwns == 0)
+                if (newSpot.spot.whoOwns == 0)
                 {
                     //hit empty
                     dirPossible = -1;
                     if (print) Debug.Log("Hit empty (end while)");
                 }
-                if (newSpot.whoOwns == whoseTurn)
+                if (newSpot.spot.whoOwns == whoseTurn)
                 {
                     //Hit my own
                     hitMyOwn = 1;
@@ -391,9 +410,9 @@ public class currentBoard : MonoBehaviour
         foreach (Vector2 pos in curBoard.Keys)
         {
             GameSpot s = curBoard[pos];
-            if (s.whoOwns == 1)
+            if (s.spot.whoOwns == 1)
                 scores.x = scores.x + 1;
-            else if (s.whoOwns == -1)
+            else if (s.spot.whoOwns == -1)
                 scores.y = scores.y + 1;
         }
         return scores;
@@ -404,7 +423,7 @@ public class currentBoard : MonoBehaviour
         foreach (Vector2 nPos in neighbors)
         {
             GameSpot s = currentState[nPos];
-            if (s.whoOwns == opponent)
+            if (s.spot.whoOwns == opponent)
                 return true;
         }
         return false;

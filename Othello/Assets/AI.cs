@@ -6,8 +6,9 @@ using Random = UnityEngine.Random;
 
 public class AI : MonoBehaviour
 {
+    public bool isMoving;
     public int playerNum = 0;
-    private int maxDepth = 10;
+    private int maxDepth = 3;
     private currentBoard cb;
     private List<Vector2> possibleMoves;
 
@@ -18,11 +19,14 @@ public class AI : MonoBehaviour
 
     void Update()
     {
-        if (cb.whoseTurn == playerNum && cb.isPlaying)
+        if (cb.whoseTurn == playerNum && cb.isPlaying && cb.aiCanGo && !isMoving)
         {
+            isMoving = true;
+            // Debug.Log("AI TO MOVE");
             Vector2 spot = onTurn(cb.curBoard, cb);
             if (spot != new Vector2(-1, -1))
                 cb.SpotClicked(spot);
+            isMoving = false;
         }
     }
 
@@ -42,7 +46,7 @@ public class AI : MonoBehaviour
         var nextSpot = maxVal(copyState, double.MinValue, double.MaxValue, 0);
 
         //decision = nextSpot.Item2;
-        decision = currentState[nextSpot.Item2].pos;
+        decision = currentState[nextSpot.Item2].spot.pos;
 
         //Below is placeholder
         //decision = possibleMoves[Random.Range(0,possibleMoves.Count)];
@@ -52,6 +56,7 @@ public class AI : MonoBehaviour
 
     private Tuple<double, Vector2> maxVal(Dictionary<Vector2, Spot> state, double alpha, double beta, int depth)
     {
+        printBoard(state);
         List<Vector2> myPossibleMoves = cb.getPossibleMovesForTurn(state);
 
         if (depth >= maxDepth)
@@ -81,6 +86,7 @@ public class AI : MonoBehaviour
 
     private Tuple<double, Vector2> minVal(Dictionary<Vector2, Spot> state, double alpha, double beta, int depth)
     {
+        printBoard(state);
         List<Vector2> myPossibleMoves = cb.getPossibleMovesForTurn(state);
 
         if (depth >= maxDepth)
@@ -93,7 +99,7 @@ public class AI : MonoBehaviour
         {
             nextStates[i] = copyDict(state);
             //nextStates[i] = state;
-            SpotClicked(nextStates[i], myPossibleMoves[i], playerNum);
+            SpotClicked(nextStates[i], myPossibleMoves[i], playerNum * -1);
             var v = maxVal(nextStates[i], alpha, beta, depth + 1);
             if (utilityVal.Item1 > v.Item1)
             {
@@ -111,13 +117,22 @@ public class AI : MonoBehaviour
     private Dictionary<Vector2, Spot> copyDict(Dictionary<Vector2, GameSpot> state)
     {
         Dictionary<Vector2, Spot> copyState = new Dictionary<Vector2, Spot>();
-        foreach (KeyValuePair<Vector2, GameSpot> item in state)
+        foreach(Vector2 key in state.Keys)
+        {
+            Spot spot = new Spot(); // This doesn't work, unity won't let you create a new Spot
+            spot.pos = new Vector2(key.x, key.y);
+            spot.whoOwns = state[key].spot.whoOwns; //item.Value.spot.whoOwns;
+            copyState.Add(new Vector2(key.x, key.y), spot);
+        }
+
+        /*foreach (KeyValuePair<Vector2, GameSpot> item in state)
         {
             Spot spot = new Spot(); // This doesn't work, unity won't let you create a new Spot
             spot.pos = new Vector2(item.Key.x, item.Key.y);
-            spot.whoOwns = item.Value.whoOwns;
+            spot.whoOwns = item.Value.spot.whoOwns;
             copyState.Add(new Vector2(item.Key.x, item.Key.y), spot);
-        }
+        }*/
+
         return copyState;
     }
 
@@ -160,6 +175,8 @@ public class AI : MonoBehaviour
 
     private void SpotClicked(Dictionary<Vector2, Spot> board, Vector2 pos, int whoClicked)
     {
+        Debug.Log(whoClicked + ": " + pos);
+
         Spot cSpot = board[pos];
 
         //Spot is now marked
@@ -174,5 +191,15 @@ public class AI : MonoBehaviour
         cb.iterDirection(board, 1, -1, cSpot, true); //Down Left
         cb.iterDirection(board, -1, 1, cSpot, true); //Up Right
         cb.iterDirection(board, -1, -1, cSpot, true); //Down Right
+    }
+
+    private void printBoard(Dictionary<Vector2, Spot> board)
+    {
+        int s = 0;
+        foreach (Vector2 key in board.Keys)
+        {
+            if (board[key].whoOwns != 0) s++;
+        }
+        Debug.Log("Spots taken: " + s);
     }
 }

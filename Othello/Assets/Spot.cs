@@ -8,7 +8,7 @@ public class Spot
     public Vector2 pos;
 
     //-1 = p2, 1 = p1, 0 = none
-    public int whoOwns;
+    public int whoOwns = 0;
 
     public void updateOwn(int n)
     {

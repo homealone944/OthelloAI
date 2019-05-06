@@ -6,8 +6,8 @@ using UnityEngine;
 public class GameSpot : MonoBehaviour
 {
     public Button btn;
-    private Spot spot;
-    public Vector2 pos
+    public Spot spot;
+    /*public Vector2 pos
     {
         get
         {
@@ -20,9 +20,10 @@ public class GameSpot : MonoBehaviour
     {
         get
         {
+            Debug.Log("request who own" + pos);
             return spot.whoOwns;
         }
-    }
+    }*/
 
     
 
@@ -97,7 +98,7 @@ public class GameSpot : MonoBehaviour
     {
         btn.interactable = n;
         spot.setSpotActive(n);
-        //updateOwn(spot.whoOwns);
+        updateOwn(spot.whoOwns);
     }
     public List<Vector2> getSpotsAround()
     {
