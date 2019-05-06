@@ -36,7 +36,7 @@ public class AI : MonoBehaviour
         Dictionary<Vector2, Spot> copyState = copyDict(currentState);
 
         Vector2 decision;
-        possibleMoves = cb.getPossibleMovesForTurn(currentState);
+        possibleMoves = cb.getPossibleMovesForTurn(currentState, playerNum);
         if (possibleMoves.Count == 0)
         {
             return new Vector2(-1, -1);
@@ -57,7 +57,7 @@ public class AI : MonoBehaviour
     private Tuple<double, Vector2> maxVal(Dictionary<Vector2, Spot> state, double alpha, double beta, int depth)
     {
         printBoard(state);
-        List<Vector2> myPossibleMoves = cb.getPossibleMovesForTurn(state);
+        List<Vector2> myPossibleMoves = cb.getPossibleMovesForTurn(state, playerNum);
 
         if (depth >= maxDepth)
         {
@@ -87,7 +87,7 @@ public class AI : MonoBehaviour
     private Tuple<double, Vector2> minVal(Dictionary<Vector2, Spot> state, double alpha, double beta, int depth)
     {
         printBoard(state);
-        List<Vector2> myPossibleMoves = cb.getPossibleMovesForTurn(state);
+        List<Vector2> myPossibleMoves = cb.getPossibleMovesForTurn(state, playerNum * -1);
 
         if (depth >= maxDepth)
         {

@@ -77,7 +77,7 @@ public class currentBoard : MonoBehaviour
 
                 //if possible for player to play, show possible moves
                 //else go to next player's turn (changes = true)
-                List<Vector2> possible = getPossibleMovesForTurn(curBoard);
+                List<Vector2> possible = getPossibleMovesForTurn(curBoard, whoseTurn);
                 if (possible.Count != 0)
                 {
                     cantMoveCount = 0;
@@ -157,7 +157,7 @@ public class currentBoard : MonoBehaviour
     }
 
     //Returns a list of spots that can be placed at
-    public List<Vector2> getPossibleMovesForTurn(Dictionary<Vector2, GameSpot> currentState)
+    public List<Vector2> getPossibleMovesForTurn(Dictionary<Vector2, GameSpot> currentState, int turn)
     {
         /*
         SUDO CODE:
@@ -171,7 +171,7 @@ public class currentBoard : MonoBehaviour
         {
             GameSpot s = currentState[position];
             //not already played on this spot and if is next to opponent's tile
-            if (s.spot.whoOwns == 0 && isNextToOpponent(currentState, s, whoseTurn * -1))
+            if (s.spot.whoOwns == 0 && isNextToOpponent(currentState, s, turn * -1))
                 possible.Add(position);
         }
 
@@ -209,7 +209,7 @@ public class currentBoard : MonoBehaviour
         return possible;
     }
 
-    public List<Vector2> getPossibleMovesForTurn(Dictionary<Vector2, Spot> currentState)
+    public List<Vector2> getPossibleMovesForTurn(Dictionary<Vector2, Spot> currentState, int turn)
     {
         /*
         SUDO CODE:
@@ -223,7 +223,7 @@ public class currentBoard : MonoBehaviour
         {
             Spot s = currentState[position];
             //not already played on this spot and if is next to opponent's tile
-            if (s.whoOwns == 0 && isNextToOpponent(currentState, s, whoseTurn * -1))
+            if (s.whoOwns == 0 && isNextToOpponent(currentState, s, turn * -1))
                 possible.Add(position);
         }
 
