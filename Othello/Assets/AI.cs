@@ -242,8 +242,6 @@ public class AI : MonoBehaviour
 
     private void SpotClicked(Dictionary<Vector2, Spot> board, Vector2 pos, int whoClicked)
     {
-        Debug.Log(whoClicked + ": " + pos);
-
         Spot cSpot = board[pos];
 
         //Spot is now marked
@@ -267,7 +265,6 @@ public class AI : MonoBehaviour
         {
             if (board[key].whoOwns != 0) s++;
         }
-        Debug.Log("Spots taken: " + s);
     }
 
     private int getEmptySpaces(Dictionary<Vector2, Spot> state)

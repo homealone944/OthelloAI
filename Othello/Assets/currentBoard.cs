@@ -32,7 +32,7 @@ public class currentBoard : MonoBehaviour
         uiManager = gameObject.GetComponent<uiUpdater>();
     }
 
-    public void startGame(bool aiP1, bool aiP2)
+    public void startGame(bool aiP1, bool aiP2, int aiP1H, int aiP2H)
     {
         whoseTurn = 1;
 
@@ -42,6 +42,10 @@ public class currentBoard : MonoBehaviour
         GetComponent<MakeTable>().StartGame();
         p1IsAi = aiP1;
         p2IsAi = aiP2;
+
+        aiList[0].hType = aiP1H;
+        aiList[1].hType = aiP2H;
+
         if (!p1IsAi)
             aiList[0].gameObject.SetActive(false);
         if (!p2IsAi)
@@ -60,7 +64,7 @@ public class currentBoard : MonoBehaviour
         }
         if (aiTimer <= 0)
         {
-            Debug.Log("AI CAN GO");
+            //Debug.Log("AI CAN GO");
             aiTimeCountDown = false;
             aiTimer = 1.5f;
             aiCanGo = true;
@@ -86,7 +90,7 @@ public class currentBoard : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log(whoseTurn + ", NO MORE MOVES");
+                    //Debug.Log(whoseTurn + ", NO MORE MOVES");
                     cantMoveCount++;
                     if (cantMoveCount < 2)
                     {
@@ -101,17 +105,23 @@ public class currentBoard : MonoBehaviour
                     else
                     {
                         //GameOver
-                        Debug.Log("GameOver");
+                        //Debug.Log("GameOver");
                         changed = false;
-                        uiManager.addMove("GAMEOVER: " + getScores());
+                        Vector2 s = getScores();
+                        uiManager.addMove("GAMEOVER: " + s);
+                        uiManager.addResult(s);
+                        isPlaying = false;
+                        uiManager.startStop();
+                        uiManager.resetUI();
                     }
                 }
             }
         }
         else
         {
+            aiCanGo = false;
             GetComponent<MakeTable>().clearTable();
-            uiManager.resetUI();
+            
         }
     }
 
