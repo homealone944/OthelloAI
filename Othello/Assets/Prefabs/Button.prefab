@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8497989819026977220}
   - component: {fileID: 8497989819026977227}
   - component: {fileID: 8497989819026977226}
-  - component: {fileID: 7707241331948605832}
+  - component: {fileID: 4780848688678144684}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -117,7 +117,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7707241331948605832}
+      - m_Target: {fileID: 4780848688678144684}
         m_MethodName: pressed
         m_Mode: 6
         m_Arguments:
@@ -130,7 +130,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &7707241331948605832
+--- !u!114 &4780848688678144684
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,20 +139,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 8497989819026977224}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dac42410a420e646a73782b8011637f, type: 3}
+  m_Script: {fileID: 11500000, guid: 9ec7c6146df9fd245b9d4db5a51adc8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   btn: {fileID: 8497989819026977226}
-  pos: {x: 0, y: 0}
-  whoOwns: 0
   white: {r: 1, g: 1, b: 1, a: 1}
   black: {r: 0, g: 0, b: 0, a: 1}
-  available: {r: 0.19441736, g: 1, b: 0, a: 1}
+  available: {r: 0.41881013, g: 1, b: 0, a: 1}
   unavailable: {r: 1, g: 0, b: 0, a: 1}
   start:
-  - {x: 3, y: 3}
-  - {x: 4, y: 3}
   - {x: 3, y: 4}
+  - {x: 4, y: 3}
+  - {x: 3, y: 3}
   - {x: 4, y: 4}
 --- !u!1 &8497989819209909331
 GameObject:

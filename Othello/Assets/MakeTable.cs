@@ -14,15 +14,16 @@ public class MakeTable : MonoBehaviour
     public GameObject tileParent;
 
 
-    public Dictionary<Vector2, Spot> board;
+    public Dictionary<Vector2, GameSpot> board;
 
     public void StartGame()
     {
-        board = new Dictionary<Vector2, Spot>();
+        board = new Dictionary<Vector2, GameSpot>();
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
+                Debug.Log("creating button");
                 createButton(i, j);
             }
         }
@@ -45,6 +46,6 @@ public class MakeTable : MonoBehaviour
         GameObject tile = Instantiate(tilePrefab, loc, Quaternion.identity, tileParent.transform);
         tile.name = x + "," + y;
 
-        board.Add(new Vector2(x,y),tile.GetComponent<Spot>());
+        board.Add(new Vector2(x,y),tile.GetComponent<GameSpot>());
     }
 }

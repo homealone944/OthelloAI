@@ -27,7 +27,7 @@ public class AI : MonoBehaviour
     }
 
     //What AI will do when the currentBoard asks for AI's move
-    public Vector2 onTurn(Dictionary<Vector2, Spot> currentState, currentBoard cb)
+    public Vector2 onTurn(Dictionary<Vector2, GameSpot> currentState, currentBoard cb)
     {
         Dictionary<Vector2, Spot> copyState = copyDict(currentState);
 
@@ -108,6 +108,19 @@ public class AI : MonoBehaviour
         return utilityVal;
     }
 
+    private Dictionary<Vector2, Spot> copyDict(Dictionary<Vector2, GameSpot> state)
+    {
+        Dictionary<Vector2, Spot> copyState = new Dictionary<Vector2, Spot>();
+        foreach (KeyValuePair<Vector2, GameSpot> item in state)
+        {
+            Spot spot = new Spot(); // This doesn't work, unity won't let you create a new Spot
+            spot.pos = new Vector2(item.Key.x, item.Key.y);
+            spot.whoOwns = item.Value.whoOwns;
+            copyState.Add(new Vector2(item.Key.x, item.Key.y), spot);
+        }
+        return copyState;
+    }
+
     private Dictionary<Vector2, Spot> copyDict(Dictionary<Vector2, Spot> state)
     {
         Dictionary<Vector2, Spot> copyState = new Dictionary<Vector2, Spot>();
@@ -115,6 +128,7 @@ public class AI : MonoBehaviour
         {
             Spot spot = new Spot(); // This doesn't work, unity won't let you create a new Spot
             spot.pos = new Vector2(item.Key.x, item.Key.y);
+            spot.whoOwns = item.Value.whoOwns;
             copyState.Add(new Vector2(item.Key.x, item.Key.y), spot);
         }
         return copyState;
