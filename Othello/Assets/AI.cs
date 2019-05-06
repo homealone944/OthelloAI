@@ -8,7 +8,7 @@ public class AI : MonoBehaviour
 {
     public bool isMoving;
     public int playerNum = 0;
-    private int maxDepth = 3;
+    private int maxDepth = 7;
     private currentBoard cb;
     private List<Vector2> possibleMoves;
 
@@ -36,7 +36,7 @@ public class AI : MonoBehaviour
         Dictionary<Vector2, Spot> copyState = copyDict(currentState);
 
         Vector2 decision;
-        possibleMoves = cb.getPossibleMovesForTurn(currentState, playerNum);
+        possibleMoves = cb.getPossibleMovesForTurn(copyState, playerNum);
         if (possibleMoves.Count == 0)
         {
             return new Vector2(-1, -1);
@@ -46,7 +46,7 @@ public class AI : MonoBehaviour
         var nextSpot = maxVal(copyState, double.MinValue, double.MaxValue, 0);
 
         //decision = nextSpot.Item2;
-        decision = currentState[nextSpot.Item2].spot.pos;
+        decision = nextSpot.Item2; //currentState[nextSpot.Item2].spot.pos;
 
         //Below is placeholder
         //decision = possibleMoves[Random.Range(0,possibleMoves.Count)];
@@ -62,6 +62,10 @@ public class AI : MonoBehaviour
         if (depth >= maxDepth)
         {
             return Tuple.Create(getUtilityMax(getScores(state)), new Vector2(-1,-1));
+        }
+        else if (getEmptySpaces(state) <= maxDepth)
+        {
+            depth = maxDepth - getEmptySpaces(state) + 1;
         }
         Dictionary<Vector2, Spot>[] nextStates = new Dictionary<Vector2, Spot>[myPossibleMoves.Count];
         var utilityVal = Tuple.Create(double.MinValue, new Vector2(-1,-1));
@@ -92,6 +96,10 @@ public class AI : MonoBehaviour
         if (depth >= maxDepth)
         {
             return Tuple.Create(getUtilityMin(getScores(state)), new Vector2(-1, -1));
+        }
+        else if (getEmptySpaces(state) <= maxDepth)
+        {
+            depth = maxDepth - getEmptySpaces(state) + 1;
         }
         Dictionary<Vector2, Spot>[] nextStates = new Dictionary<Vector2, Spot>[myPossibleMoves.Count];
         var utilityVal = Tuple.Create(double.MaxValue, new Vector2(-1, -1));
@@ -163,12 +171,26 @@ public class AI : MonoBehaviour
         return scores;
     }
 
-    private double getUtilityMax(Vector2 scores)
+    private double getUtilityMax(Dictionary<Vector2, Spot> state)
+    {
+
+
+        return 0;
+    }
+
+    private double getUtilityMin(Dictionary<Vector2, Spot> state)
+    {
+
+
+        return 0;
+    }
+
+    private double getUtilityMaxGreedy(Vector2 scores)
     {
         return scores.x - scores.y;
     }
 
-    private double getUtilityMin(Vector2 scores)
+    private double getUtilityMinGreedy(Vector2 scores)
     {
         return scores.y - scores.x;
     }
@@ -202,4 +224,16 @@ public class AI : MonoBehaviour
         }
         Debug.Log("Spots taken: " + s);
     }
+
+    private int getEmptySpaces(Dictionary<Vector2, Spot> state)
+    {
+        int s = 0;
+        foreach (Vector2 key in state.Keys)
+        {
+            if (state[key].whoOwns == 0) s++;
+        }
+        return s;
+    }
+
 }
+
