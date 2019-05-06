@@ -8,7 +8,7 @@ public class AI : MonoBehaviour
 {
     public bool isMoving;
     public int playerNum = 0;
-    private int maxDepth = 4;
+    public int maxDepth = 4;
     [Tooltip("0=random,1=risk,2=greedyDiff,3=greedy")]
     public int hType = 1;
     private currentBoard cb;

@@ -32,7 +32,7 @@ public class currentBoard : MonoBehaviour
         uiManager = gameObject.GetComponent<uiUpdater>();
     }
 
-    public void startGame(bool aiP1, bool aiP2, int aiP1H, int aiP2H)
+    public void startGame(bool aiP1, bool aiP2, int aiP1H, int aiP2H, int aiP1Depth, int aiP2Depth)
     {
         whoseTurn = 1;
 
@@ -45,6 +45,9 @@ public class currentBoard : MonoBehaviour
 
         aiList[0].hType = aiP1H;
         aiList[1].hType = aiP2H;
+        aiList[0].maxDepth = aiP1Depth;
+        aiList[1].maxDepth = aiP2Depth;
+
 
         if (!p1IsAi)
             aiList[0].gameObject.SetActive(false);

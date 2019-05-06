@@ -25,18 +25,15 @@ public class uiUpdater : MonoBehaviour
     public GameObject stopButton;
     public Dropdown AiP1H;
     public Dropdown AiP2H;
-
-    public Dropdown uiGameMoveList;
-    public GameObject loadButton;
+    public Slider AiP1DepthSlider;
+    public Slider AiP2DepthSlider;
 
     private bool timerOn = false;
     private float timer;
     private int gameCount;
-    private List<string> gameMoveList;
 
     void Start()
     {
-        gameMoveList = new List<string>();
         gameCount = 0;
         setScore(new Vector2(p1Score, p2Score));
         startButton.SetActive(true);
@@ -81,7 +78,9 @@ public class uiUpdater : MonoBehaviour
         resetUI();
         startButton.SetActive(!startButton.activeInHierarchy);
         stopButton.SetActive(!stopButton.activeInHierarchy);
-        loadButton.SetActive(!loadButton.activeInHierarchy);
+
+        AiP1DepthSlider.interactable = !AiP1DepthSlider.interactable;
+        AiP2DepthSlider.interactable = !AiP2DepthSlider.interactable;
 
         currentBoard b = GetComponent<currentBoard>();
 
@@ -91,7 +90,7 @@ public class uiUpdater : MonoBehaviour
         {
             timerOn = true;
             addMove("<Start Game>");
-            b.startGame(AiP1.isOn, AiP2.isOn, AiP1H.value, AiP2H.value);
+            b.startGame(AiP1.isOn, AiP2.isOn, AiP1H.value, AiP2H.value, (int)AiP1DepthSlider.value, (int)AiP2DepthSlider.value);
             AiP1.interactable = false;
             AiP2.interactable = false;
 
@@ -112,7 +111,7 @@ public class uiUpdater : MonoBehaviour
         string add = gameCount+") ";
         if (AiP1.isOn)
         {
-            add += "Ai1 " + AiP1H.options[AiP1H.value].text + ":";
+            add += "Ai1 " + AiP1H.options[AiP1H.value].text + " D" + AiP1DepthSlider.value +": ";
         }
         else
             add += "P1:";
@@ -120,20 +119,16 @@ public class uiUpdater : MonoBehaviour
 
         if (AiP2.isOn)
         {
-            add += "Ai2 " + AiP2H.options[AiP2H.value].text + ":";
+            add += "Ai2 " + AiP2H.options[AiP2H.value].text + " D" + AiP2DepthSlider.value + ": ";
         }
         else
             add += "P2:";
         add += scores.y + "\n";
 
-        add += timer.ToString("0.00") + "s\n";
+        add += timer.ToString("0.000") + "s\n";
         outcomes.text += add;
         timerOn = false;
         timer = 0;
-
-        gameMoveList.Add(moveListUI.text);
-        if(gameCount > 3)
-            uiGameMoveList.options.Add(new Dropdown.OptionData("Game "+gameCount));
     }
 
     public void resetUI()
@@ -143,11 +138,21 @@ public class uiUpdater : MonoBehaviour
         setWhoJustMadeTurn(2);
     }
 
-    public void loadMoves()
+    public void updateDepthShow(Text ui)
     {
-        Debug.Log("Load moves " + uiGameMoveList.value);
-        Debug.Log(gameMoveList[0]);
-        if(uiGameMoveList.value < gameMoveList.Count)
-            moveListUI.text = gameMoveList[uiGameMoveList.value];
+        if (ui.name.Contains("1"))
+        {
+            ui.text = AiP1DepthSlider.value + "";
+        }
+        else if (ui.name.Contains("2"))
+        {
+            ui.text = AiP2DepthSlider.value + "";
+        }
+    }
+
+    public void clearResults()
+    {
+        outcomes.text = "";
+        gameCount = 0;
     }
 }
