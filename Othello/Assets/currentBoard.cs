@@ -24,7 +24,7 @@ public class currentBoard : MonoBehaviour
     bool p1IsAi = false;
     bool p2IsAi = false;
     bool aiTimeCountDown = false;
-    float aiTimer = 2;
+    float aiTimer = 1.5f;
     public bool aiCanGo = false;
 
     private void Start()
@@ -62,7 +62,7 @@ public class currentBoard : MonoBehaviour
         {
             Debug.Log("AI CAN GO");
             aiTimeCountDown = false;
-            aiTimer = 2;
+            aiTimer = 1.5f;
             aiCanGo = true;
         }
 
@@ -113,6 +113,12 @@ public class currentBoard : MonoBehaviour
             GetComponent<MakeTable>().clearTable();
             uiManager.resetUI();
         }
+    }
+
+    public void aiCantMove()
+    {
+        cantMoveCount ++;
+        goNextTurn();
     }
 
     public void SpotClicked(Vector2 pos, bool start = false)

@@ -582,10 +582,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   whoseTurn: 1
+  isPlaying: 0
   aiList:
   - {fileID: 1823858249}
   - {fileID: 1792654483}
-  isPlaying: 0
+  aiCanGo: 0
 --- !u!114 &157692485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2912,7 +2913,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.000015258789, y: 0.0000033684705}
+  m_AnchoredPosition: {x: 0.000015258789, y: 0.0000182866}
   m_SizeDelta: {x: 260, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1181535897
@@ -4444,7 +4445,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e48c78b8758e4044eb088e649e2922c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMoving: 0
   playerNum: -1
+  hType: 1
 --- !u!1 &1823858247
 GameObject:
   m_ObjectHideFlags: 0
@@ -4488,7 +4491,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e48c78b8758e4044eb088e649e2922c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMoving: 0
   playerNum: 1
+  hType: 1
 --- !u!1 &1907510447
 GameObject:
   m_ObjectHideFlags: 0

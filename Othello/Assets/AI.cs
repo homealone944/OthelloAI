@@ -8,7 +8,9 @@ public class AI : MonoBehaviour
 {
     public bool isMoving;
     public int playerNum = 0;
-    private int maxDepth = 7;
+    private int maxDepth = 4;
+    [Tooltip("0=random,1=risk,2=greedyDiff,3=greedy")]
+    public int hType = 1;
     private currentBoard cb;
     private List<Vector2> possibleMoves;
 
@@ -26,6 +28,8 @@ public class AI : MonoBehaviour
             Vector2 spot = onTurn(cb.curBoard, cb);
             if (spot != new Vector2(-1, -1))
                 cb.SpotClicked(spot);
+            else
+                cb.aiCantMove();
             isMoving = false;
         }
     }
@@ -37,12 +41,18 @@ public class AI : MonoBehaviour
 
         Vector2 decision;
         possibleMoves = cb.getPossibleMovesForTurn(copyState, playerNum);
+        //OUT OF MOVES
         if (possibleMoves.Count == 0)
-        {
             return new Vector2(-1, -1);
+
+        //Random AI
+        if (hType == 0)
+        {
+            return possibleMoves[Random.Range(0,possibleMoves.Count)];
         }
 
-        //TODO Make minMax tree with AlphaBetaPruning here
+
+        //Make minMax tree with AlphaBetaPruning here
         var nextSpot = maxVal(copyState, double.MinValue, double.MaxValue, 0);
 
         //decision = nextSpot.Item2;
@@ -61,21 +71,21 @@ public class AI : MonoBehaviour
 
         if (depth >= maxDepth)
         {
-            return Tuple.Create(getUtilityMax(getScores(state)), new Vector2(-1,-1));
+            return Tuple.Create(getHeuristic(state, playerNum), new Vector2(-1, -1));
         }
         else if (getEmptySpaces(state) <= maxDepth)
         {
             depth = maxDepth - getEmptySpaces(state) + 1;
         }
         Dictionary<Vector2, Spot>[] nextStates = new Dictionary<Vector2, Spot>[myPossibleMoves.Count];
-        var utilityVal = Tuple.Create(double.MinValue, new Vector2(-1,-1));
+        var utilityVal = Tuple.Create(double.MinValue, new Vector2(-1, -1));
         for (int i = 0; i < nextStates.Length; i++)
         {
             nextStates[i] = copyDict(state);
             //nextStates[i] = state; // Should create another deep copy here
             SpotClicked(nextStates[i], myPossibleMoves[i], playerNum);
             var v = minVal(nextStates[i], alpha, beta, depth + 1);
-            if(utilityVal.Item1 < v.Item1)
+            if (utilityVal.Item1 < v.Item1)
             {
                 utilityVal = Tuple.Create(v.Item1, myPossibleMoves[i]);
             }
@@ -95,7 +105,7 @@ public class AI : MonoBehaviour
 
         if (depth >= maxDepth)
         {
-            return Tuple.Create(getUtilityMin(getScores(state)), new Vector2(-1, -1));
+            return Tuple.Create(getHeuristic(state, playerNum), new Vector2(-1, -1));
         }
         else if (getEmptySpaces(state) <= maxDepth)
         {
@@ -125,7 +135,7 @@ public class AI : MonoBehaviour
     private Dictionary<Vector2, Spot> copyDict(Dictionary<Vector2, GameSpot> state)
     {
         Dictionary<Vector2, Spot> copyState = new Dictionary<Vector2, Spot>();
-        foreach(Vector2 key in state.Keys)
+        foreach (Vector2 key in state.Keys)
         {
             Spot spot = new Spot(); // This doesn't work, unity won't let you create a new Spot
             spot.pos = new Vector2(key.x, key.y);
@@ -171,28 +181,63 @@ public class AI : MonoBehaviour
         return scores;
     }
 
-    private double getUtilityMax(Dictionary<Vector2, Spot> state)
+    private double getUtilityRisk(Dictionary<Vector2, Spot> state, int currentPlayer)
     {
+        int[] utilityTable = {200, -100, 100, 50, 50, 100, -100, 200,
+                -100, -200, -50, -50, -50, -50, -200, -100,
+                100, -50, 100, 0, 0, 100, -50, 100,
+                50, -50, 0, 0, 0, 0, -50, 50,
+                50, -50, 0, 0, 0, 0, -50, 50,
+                100, -50, 100, 0, 0, 100, -50, 100,
+                -100, -200, -50, -50, -50, -50, -200, -100,
+                200, -100, 100, 50, 50, 100, -100, 200 };
 
-
-        return 0;
+        double s = 0;
+        foreach(Vector2 key in state.Keys)
+        {
+            if(state[key].whoOwns == currentPlayer)
+            {
+                s += utilityTable[(int)(8 * key.y + key.x)];
+            }
+        }
+        return s;
     }
 
-    private double getUtilityMin(Dictionary<Vector2, Spot> state)
+    private double getUtilityGreedyDiff(Vector2 scores, int currentPlayer)
     {
-
-
-        return 0;
+        if (currentPlayer == 1)
+            return scores.x - scores.y;
+        else
+            return scores.y - scores.x;
+    }
+    private double getUtilityGreedy(Vector2 scores, int currentPlayer)
+    {
+        if (currentPlayer == 1)
+            return scores.x;
+        else
+            return scores.y;
     }
 
-    private double getUtilityMaxGreedy(Vector2 scores)
+    private double getHeuristic(Dictionary<Vector2, Spot> state, int curP)
     {
-        return scores.x - scores.y;
-    }
-
-    private double getUtilityMinGreedy(Vector2 scores)
-    {
-        return scores.y - scores.x;
+        double h = 0;
+        Vector2 scores = getScores(state);
+        switch (hType)
+        {
+            case 2:
+                h = getUtilityGreedyDiff(scores, curP);
+                //GreedyDiff
+                break;
+            case 3:
+                h = getUtilityGreedy(scores, curP);
+                //Greedy
+                break;
+            default:
+                h = getUtilityRisk(state, curP);
+                //Risk (1)
+                break;
+        }
+        return h;
     }
 
     private void SpotClicked(Dictionary<Vector2, Spot> board, Vector2 pos, int whoClicked)
